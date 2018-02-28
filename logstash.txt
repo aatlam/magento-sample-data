@@ -1,0 +1,325 @@
+SELECT `MagentoQuickstartDB`.`sales_order_item`.`item_id`,
+    `MagentoQuickstartDB`.`sales_order_item`.`order_id`,
+    `MagentoQuickstartDB`.`sales_order`.`increment_id` as order_number,
+    monthname(`MagentoQuickstartDB`.`sales_order_item`.`created_at`) as month,
+    dayname(`MagentoQuickstartDB`.`sales_order_item`.`created_at`) as day,
+    CASE`MagentoQuickstartDB`.`sales_order_item`.`store_id`
+		WHEN 2 THEN 'English'
+		WHEN 3 THEN 'Arabic'END as store_view,
+    `MagentoQuickstartDB`.`sales_order`.`status` as order_status,
+    `MagentoQuickstartDB`.`sales_order_item`.`created_at`,
+    `MagentoQuickstartDB`.`sales_order_item`.`updated_at`,
+    `MagentoQuickstartDB`.`sales_order_item`.`product_id`,
+    `MagentoQuickstartDB`.`sales_order_item`.`sku`,
+    `MagentoQuickstartDB`.`catalog_product_entity_varchar`.`value` as barcode,
+    `MagentoQuickstartDB`.`catalog_product_flat_2`.`brand_value` as brand,
+    `MagentoQuickstartDB`.`catalog_product_flat_2`.`name` as product_name,
+    `MagentoQuickstartDB`.`cataloginventory_stock_item`.`qty` as inventory_available,
+    `MagentoQuickstartDB`.`sales_order_item`.`qty_ordered` as qty,
+    `MagentoQuickstartDB`.`sales_order_item`.`base_cost` as cost_per_unit,
+    `MagentoQuickstartDB`.`sales_order_item`.`price` as price_per_unit,
+    ((`MagentoQuickstartDB`.`sales_order_item`.`price`+`MagentoQuickstartDB`.`sales_order_item`.`base_tax_amount`-`MagentoQuickstartDB`.`sales_order_item`.`base_discount_amount`)*`MagentoQuickstartDB`.`sales_order_item`.`qty_ordered`) as revenue,
+    (`MagentoQuickstartDB`.`sales_order_item`.`base_cost`*`MagentoQuickstartDB`.`sales_order_item`.`qty_ordered`) as cost,
+    (((`MagentoQuickstartDB`.`sales_order_item`.`price`+`MagentoQuickstartDB`.`sales_order_item`.`base_tax_amount`-`MagentoQuickstartDB`.`sales_order_item`.`base_discount_amount`)*`MagentoQuickstartDB`.`sales_order_item`.`qty_ordered`)-(`MagentoQuickstartDB`.`sales_order_item`.`base_cost`*`MagentoQuickstartDB`.`sales_order_item`.`qty_ordered`)) as margin_amount,
+    ((((`MagentoQuickstartDB`.`sales_order_item`.`price`+`MagentoQuickstartDB`.`sales_order_item`.`base_tax_amount`-`MagentoQuickstartDB`.`sales_order_item`.`base_discount_amount`)*`MagentoQuickstartDB`.`sales_order_item`.`qty_ordered`)-(`MagentoQuickstartDB`.`sales_order_item`.`base_cost`*`MagentoQuickstartDB`.`sales_order_item`.`qty_ordered`))/((`MagentoQuickstartDB`.`sales_order_item`.`price`+`MagentoQuickstartDB`.`sales_order_item`.`base_tax_amount`-`MagentoQuickstartDB`.`sales_order_item`.`base_discount_amount`)*`MagentoQuickstartDB`.`sales_order_item`.`qty_ordered`))*100 as margin_percentage,
+    `MagentoQuickstartDB`.`sales_order_item`.`original_price` as orginial_price_per_unit,
+    `MagentoQuickstartDB`.`sales_order_item`.`base_tax_amount` as tax_amount,
+    `MagentoQuickstartDB`.`sales_order_item`.`discount_percent` as discount_percent,
+    `MagentoQuickstartDB`.`sales_order_item`.`base_discount_amount` as discount_amount_per_unit,
+    CASE`MagentoQuickstartDB`.`sales_order_item`.`free_shipping`
+		WHEN 1 THEN 'Yes'
+		WHEN 0 THEN 'No'END as free_shipping,
+    `MagentoQuickstartDB`.`sales_order`.`coupon_code`,
+    `MagentoQuickstartDB`.`sales_order`.`customer_email`,
+    CASE`MagentoQuickstartDB`.`sales_order`.`customer_is_guest`
+		WHEN 1 THEN 'Guest'
+		WHEN 0 THEN 'Registered'END as customer_type,
+	`MagentoQuickstartDB`.`sales_order_payment`.`method` as payment_method,
+    CASE `MagentoQuickstartDB`.`sales_order_payment`.`method`
+		WHEN `MagentoQuickstartDB`.`sales_order_payment`.`method` <> 'msp_cashondelivery' THEN `MagentoQuickstartDB`.`sales_order`.`msp_cod_amount`
+		ELSE '0'
+		END as cash_on_delivery_fees,
+    `MagentoQuickstartDB`.`sales_order_address`.`firstname` as customer_first_name,
+    `MagentoQuickstartDB`.`sales_order_address`.`lastname` as customer_last_name,
+    `MagentoQuickstartDB`.`sales_order_address`.`telephone` as customer_phone,
+    CASE `MagentoQuickstartDB`.`sales_order_address`.`city`
+		WHEN 'الرياض' THEN 'Riyadh'
+        WHEN 'جدة' THEN 'Jeddah'
+		WHEN 'ابها' THEN 'Abha'
+		WHEN 'احد رفيدة' THEN 'Ahad Rafidah'
+		WHEN 'الدوادمي' THEN 'Duwadimi'
+		WHEN 'الأحساء' THEN 'Al Ahsa'
+		WHEN 'عرعر' THEN 'Arar'
+		WHEN 'الباحة' THEN 'Baha'
+		WHEN 'بيشة' THEN 'Bishah'
+		WHEN 'الدمام' THEN 'Dammam'
+		WHEN 'الدرعية' THEN 'Diriyah'
+		WHEN 'ظهران' THEN 'Dhahran'
+		WHEN 'جازان' THEN 'Jazan'
+		WHEN 'حفر الباطن' THEN 'Hafar Al Baten'
+		WHEN 'حائل' THEN 'Hail'
+		WHEN 'الجوف' THEN 'Al Jouf'
+		WHEN 'الجبيل' THEN 'Jubail'
+		WHEN 'خميس مشيط' THEN 'Khamis Mushayt'
+		WHEN 'الخرج' THEN 'Kharj'
+		WHEN 'الخبر' THEN 'Khubar'
+		WHEN 'مكة' THEN 'Makkah'
+		WHEN 'المدينة المنورة' THEN 'Madinah'
+		WHEN 'نجران' THEN 'Najran'
+		WHEN 'مطار القصيم' THEN 'Qaseem Airport'
+		WHEN 'القطيف' THEN 'Qatif'
+		WHEN 'القريات' THEN 'Qurayyat'
+		WHEN 'رفحاء' THEN 'Rafha'
+		WHEN 'سيهات' THEN 'Sayhat'
+		WHEN 'شرورة' THEN 'Sharourah'
+		WHEN 'تبوك' THEN 'Tabuk'
+		WHEN 'الطائف' THEN 'Taif'
+		WHEN 'تاروت' THEN 'Tarut (Darin)'
+		WHEN 'طريف' THEN 'Turayf'
+		WHEN 'وادي الدواسر' THEN 'Wadi Al-Dawasir'
+		WHEN 'ينبع' THEN 'Yanbu'
+		WHEN 'القنفذة' THEN 'Qunfudhah'
+		WHEN 'المجمعة' THEN 'Majmaah'
+		WHEN 'راس تنورة' THEN 'Ras Tannurah'
+		WHEN 'البكيرية' THEN 'Bukayriyah'
+		WHEN 'تثليث' THEN 'Tathlith'
+		WHEN 'المذنب' THEN 'Midhnab'
+		WHEN 'القويعية' THEN 'Quwayiyah'
+		WHEN 'ظهران الجنوبيه' THEN 'Dhahran Al Janoub'
+		WHEN 'أبو عريش' THEN 'Abu Arish'
+		WHEN 'سراة عبيدة' THEN 'Sarat Abida'
+		WHEN 'المخواه' THEN 'Mukhwah'
+		WHEN 'تربة' THEN 'Turbah'
+		WHEN 'رانية' THEN 'Ranyah'
+		WHEN 'المجاردة' THEN 'Majardah'
+		WHEN 'عفيف' THEN 'Afif'
+		WHEN 'الأفلاج' THEN 'Al Aflaj (Layla)'
+		WHEN 'ساجر' THEN 'Sajir'
+		WHEN 'شقراء' THEN 'Shaqra'
+		WHEN 'الزلفي' THEN 'Zulfi'
+		WHEN 'النماص' THEN 'Namas'
+		WHEN 'السليل' THEN 'Sulayyil'
+		WHEN 'بلجرشي' THEN 'Baljurashi'
+		WHEN 'سبت العلاية' THEN 'Sapt Al Alaya'
+		WHEN 'تنومة' THEN 'Tanumah'
+		WHEN 'تيماء' THEN 'Taima'
+		WHEN 'الثقبة' THEN 'Thqbah'
+		WHEN 'صفوة' THEN 'Safwa'
+		WHEN 'رابغ' THEN 'Rabigh'
+		WHEN 'رجال المع' THEN 'Rijal Almaa'
+		WHEN 'الداير' THEN 'Al Dayer'
+		WHEN 'رياض الخبراء' THEN 'Khabra'
+		WHEN 'المزاحمية' THEN 'Muzahmiyah'
+		WHEN 'طبرجل' THEN 'Tabarjal'
+		WHEN 'درب' THEN 'Darb'
+		WHEN 'الطوال' THEN 'At Tuwal'
+		WHEN 'محايل عسير' THEN 'Muhayil'
+		WHEN 'النعيرية' THEN 'Nairiyah'
+		WHEN 'الهفوف' THEN 'Hufuf'
+		WHEN 'صبيا' THEN 'Sabya'
+		WHEN 'دومة الجندل' THEN 'Dawmat Al Jandal'
+		WHEN 'املج' THEN 'Ummlujj'
+		WHEN 'العلاء' THEN 'Ula'
+		WHEN 'صامطة' THEN 'Samtah'
+		WHEN 'قرية العليا' THEN 'Qarya Al Uliya'
+		WHEN 'بقيق' THEN 'Buqaiq'
+		WHEN 'سكاكا' THEN 'Skakah'
+		WHEN 'ضبا' THEN 'Dhuba'
+		WHEN 'الخرمة' THEN 'Khurmah'
+		WHEN 'الخفجي' THEN 'Khafji'
+		WHEN 'بريدة' THEN 'Buraydah'
+		WHEN 'الرس' THEN 'Rass'
+		WHEN 'عنيزة' THEN 'Unayzah'
+		WHEN 'العقيق' THEN 'Aqiq'
+		WHEN 'العطولة' THEN 'Atawlah'
+		WHEN 'المندق' THEN 'Mandaq'
+		WHEN 'المظيلف' THEN 'Mudhaylif'
+		WHEN 'قيلوه' THEN 'Qilwah'
+		WHEN 'بشاير' THEN 'Bashayer'
+		WHEN 'بلسمر' THEN 'Bellasmar'
+		WHEN 'عين دار' THEN 'Ain Dar'
+		WHEN 'عنك' THEN 'Anak'
+		WHEN 'جسر البحرين' THEN 'Bahrain Causeway'
+		WHEN 'مطار الدمام' THEN 'Dammam Airport'
+		WHEN 'منيفة' THEN 'Muneefa'
+		WHEN 'رحيمة' THEN 'Rahima'
+		WHEN 'شدقم' THEN 'Shedgum'
+		WHEN 'طناجيب' THEN 'Tanajib'
+		WHEN 'العضيلية' THEN 'Udhayliyah'
+		WHEN 'العثمانيه' THEN 'Uthmaniyah'
+		WHEN 'دخنة' THEN 'Dukhnah'
+		WHEN 'النبهانية' THEN 'Nabhaniya'
+		WHEN 'النبهانية' THEN 'Nabhaniah'
+		WHEN 'نيفي' THEN 'Nifi'
+		WHEN 'رياض الخبراء' THEN 'Riyadh Al Khabra'
+		WHEN 'عقلة الصقور' THEN 'Uqlat As Suqur'
+		WHEN 'عيون الجواء' THEN 'Uyun Al Jiwa'
+		WHEN 'احد المسارحه' THEN 'Ahad Al Masarhah'
+		WHEN 'بني مالك' THEN 'Bani Malek'
+		WHEN 'البيش' THEN 'Baysh'
+		WHEN 'ضمد' THEN 'Dhamad'
+		WHEN 'فرسان' THEN 'Farasan'
+		WHEN 'الشقيق' THEN 'Shuqayq'
+		WHEN 'الصايرة' THEN 'Sayirah'
+		WHEN 'الرقي' THEN 'Al Ruqi'
+		WHEN 'مدينة الملك خالد' THEN 'King Khalid City'
+		WHEN 'القيصومة' THEN 'Qaysumah'
+		WHEN 'الصرار' THEN 'Sarrar'
+		WHEN 'العيون' THEN 'Al Ayun'
+		WHEN 'الجفر' THEN 'Al Jafr'
+		WHEN 'البطحاء' THEN 'Batha'
+		WHEN 'المبرز' THEN 'Mubarraz'
+		WHEN 'سلوى' THEN 'Salwa'
+		WHEN 'بدر' THEN 'Badr'
+		WHEN 'بحره' THEN 'Bahrah'
+		WHEN 'مطار جدة' THEN 'Jeddah Airport'
+		WHEN 'كامل' THEN 'Kamil'
+		WHEN 'خليص' THEN 'Khulais'
+		WHEN 'ليث' THEN 'Lith'
+		WHEN 'مستورة' THEN 'Masturah'
+		WHEN 'الشعيبة' THEN 'Shaibah'
+		WHEN 'ثول' THEN 'Thuwal'
+		WHEN 'بارق' THEN 'Bariq'
+		WHEN 'جاش' THEN 'Jash'
+		WHEN 'النقيع' THEN 'Nakeea'
+		WHEN 'طريب' THEN 'Tarib'
+		WHEN 'وادي بن هشبل' THEN 'Wadi Bin Hashbal'
+		WHEN 'الجموم' THEN 'Jamoum'
+		WHEN 'الحناكية' THEN 'Hanakiyah'
+		WHEN 'خيبر' THEN 'Khayber'
+		WHEN 'مهد الذهب' THEN 'Mahd Ad Dhahab'
+		WHEN 'الأرطاوية' THEN 'Artawiyah'
+		WHEN 'البجادية' THEN 'Bijadiyah'
+		WHEN 'الغاط' THEN 'Ghat'
+		WHEN 'حوطة سدير' THEN 'Hawtat Sudayr'
+		WHEN 'عرعر الجديدة' THEN 'Jadidah Arar'
+		WHEN 'ضرما' THEN 'Dhurma'
+		WHEN 'الدلم' THEN 'Dilam'
+		WHEN 'حوطة بني تميم' THEN 'Hawtat Bani Tamim'
+		WHEN 'الحائر' THEN 'Hayer'
+		WHEN 'حريملاء' THEN 'Huraymila'
+		WHEN 'الريان' THEN 'Rayn'
+		WHEN 'مطار الرياض' THEN 'Riyadh Airport'
+		WHEN 'رماح' THEN 'Rumah'
+		WHEN 'الرويضة' THEN 'Ruwaidah'
+		WHEN 'ظلم' THEN 'Dhalim'
+		WHEN 'الموية' THEN 'Muwayh'
+		WHEN 'السيل الكبير' THEN 'Sayl Al Kabir'
+		WHEN 'تربة' THEN 'Turbah (Makkah)'
+		WHEN 'الباد' THEN 'Bad'
+		WHEN 'حالة عمار' THEN 'Halit Ammar'
+		WHEN 'حقل' THEN 'Haql'
+		WHEN 'الحديثة' THEN 'Haditha'
+		WHEN 'الخماسين' THEN 'Khamasin'
+		WHEN 'بدر حنین‎' THEN 'Badar Hunain'
+		WHEN 'الوجه' THEN 'Wajh'
+		ELSE `MagentoQuickstartDB`.`sales_order_address`.`city` END as city,
+    `MagentoQuickstartDB`.`sales_order_address`.`company` as area,
+    `MagentoQuickstartDB`.`sales_order`.`grand_total` as order_grand_total,
+    `MagentoQuickstartDB`.`sales_order`.`subtotal` as order_subtotal,
+    `MagentoQuickstartDB`.`sales_order_item`.`price`*`MagentoQuickstartDB`.`sales_order_item`.`qty_ordered`/`MagentoQuickstartDB`.`sales_order`.`subtotal`*100 as contributon_in_cart,
+    substring_index(`MagentoQuickstartDB`.`catalog_category_flat_store_2`.`url_path`,'/',1) as category_1,
+    substring_index(substring_index(`MagentoQuickstartDB`.`catalog_category_flat_store_2`.`url_path`,'/',2),'/',-1) as category_2,
+	`MagentoQuickstartDB`.`catalog_category_flat_store_2`.`url_key` as category_3,
+    CASE `MagentoQuickstartDB`.`catalog_product_entity_int`.`value`
+		WHEN 345 THEN 'Naghi Brothers (Nivea)'
+		WHEN 367 THEN 'Arabian Trading Supplies (Dettol)'
+		WHEN 368 THEN 'Naghi Brothers (Johnson)'
+		WHEN 390 THEN 'Naghi Brothers (Sensodyne)'
+		WHEN 366 THEN 'Al Arfaj Commerical&Import Co.'
+		WHEN 389 THEN 'Naghi Brothers (Gillette)'
+		WHEN 361 THEN 'Derma Pro Est'
+		WHEN 369 THEN 'Sadana Trading Est'
+		WHEN 384 THEN 'Abu Dawood Company'
+		WHEN 363 THEN 'Durrat Al-Masader Est **'
+		WHEN 385 THEN 'Beauty Box Trading Company'
+		WHEN 394 THEN 'Brand Boutique'
+		WHEN 349 THEN 'Teqneyat Aldawaa'
+		WHEN 350 THEN 'Al Haya Medical Company'
+		WHEN 351 THEN 'Dar Madi'
+		WHEN 352 THEN 'Medi Sense Trading Est'
+		WHEN 356 THEN 'Azal World'
+		WHEN 341 THEN 'Medical Pharmaceutcal Services'
+		WHEN 353 THEN 'Nufoud Medical Trading Company'
+		WHEN 386 THEN 'Al Quraishi Marketing Co Ltd'
+		WHEN 370 THEN 'AbdulRahman AlGosaibi GTC'
+		WHEN 382 THEN 'Nahda Company'
+		WHEN 355 THEN 'Care World'
+		WHEN 383 THEN 'Al Mosawiq al Arabi'
+		WHEN 373 THEN 'Binzagr'
+		WHEN 359 THEN 'Beauty Solutions'
+		WHEN 343 THEN 'Cigala Group Afaq(Bioderma)'
+		WHEN 357 THEN 'Khalifa A. Alqosaibi Coldstore'
+		WHEN 348 THEN 'Beta Drug & Cosmetic Co'
+		WHEN 342 THEN 'Al Haya Medical Company (Galderma)'
+		WHEN 391 THEN 'General Tradng Company(Olayan)'
+		WHEN 344 THEN 'Al Tawaya'
+		WHEN 346 THEN 'Najd Trading Company'
+		WHEN 364 THEN 'Al Haya Company (Lytess)'
+		WHEN 358 THEN 'Batterjee Company (Color n Soin)'
+		WHEN 374 THEN 'Arabian Trading Supplies(Loreal)'
+		WHEN 387 THEN 'Multi Visions'
+		WHEN 375 THEN 'Dar Samaiel Trading Est.'
+		WHEN 379 THEN 'Al Amoudi'
+		WHEN 378 THEN 'Pure Star'
+		WHEN 377 THEN 'Jamjoom Medicine Stores'
+		WHEN 360 THEN 'Salhiya (Ego QV)'
+		WHEN 354 THEN 'Al Haya Medical Company (Phyto)'
+		WHEN 372 THEN 'National Distribution Company'
+		WHEN 395 THEN 'Amalona Trading Est.'
+		WHEN 376 THEN 'Radwa International'
+		WHEN 365 THEN 'Sub Distributor'
+		WHEN 388 THEN 'Cigala (Durex)'
+		WHEN 393 THEN 'General Tradng Company(Huggies)'
+		WHEN 380 THEN 'Salhiya (Beurer)'
+		WHEN 347 THEN 'Durrat bilqis company'
+		WHEN 396 THEN 'First Silver General Trading Est.'
+		WHEN 362 THEN 'DAL Pharma'
+		WHEN 381 THEN 'Sports & Food Establishment for Trading (Amcan)'
+		WHEN 392 THEN 'Batterjee Company (Bayer)'
+		WHEN 1649 THEN 'Zahrani Company'
+		WHEN 1648 THEN 'Saudi International Trading Co. Ltd. (SITCO)' 
+        ELSE `MagentoQuickstartDB`.`catalog_product_entity_int`.`value`END as supplier
+
+
+	
+    
+    
+    
+FROM `MagentoQuickstartDB`.`sales_order_item`
+JOIN `MagentoQuickstartDB`.`sales_order`
+ON `MagentoQuickstartDB`.`sales_order`.`entity_id` = `MagentoQuickstartDB`.`sales_order_item`.`order_id`
+
+LEFT JOIN `MagentoQuickstartDB`.`catalog_product_flat_2`
+ON `MagentoQuickstartDB`.`sales_order_item`.`product_id` = `MagentoQuickstartDB`.`catalog_product_flat_2`.`entity_id`
+
+LEFT JOIN `MagentoQuickstartDB`.`catalog_category_product`
+ON `MagentoQuickstartDB`.`catalog_category_product`.`category_id`<='553'
+AND `MagentoQuickstartDB`.`catalog_category_product`.`category_id` <> '546'
+AND `MagentoQuickstartDB`.`catalog_category_product`.`category_id` <> '547'
+AND `MagentoQuickstartDB`.`sales_order_item`.`product_id` = `MagentoQuickstartDB`.`catalog_category_product`.`product_id`
+
+LEFT JOIN `MagentoQuickstartDB`.`sales_order_payment`
+ON `MagentoQuickstartDB`.`sales_order_item`.`order_id` = `MagentoQuickstartDB`.`sales_order_payment`.`parent_id`
+
+LEFT JOIN `MagentoQuickstartDB`.`sales_order_address`
+ON `MagentoQuickstartDB`.`sales_order_address`.`address_type` = 'shipping'
+AND `MagentoQuickstartDB`.`sales_order`.`entity_id` = `MagentoQuickstartDB`.`sales_order_address`.`parent_id`
+
+LEFT JOIN `MagentoQuickstartDB`.`catalog_category_flat_store_2`
+ON `MagentoQuickstartDB`.`catalog_category_product`.`category_id` = `MagentoQuickstartDB`.`catalog_category_flat_store_2`.`entity_id`
+
+LEFT JOIN `MagentoQuickstartDB`.`catalog_product_entity_int`
+ON (`MagentoQuickstartDB`.`sales_order_item`.`product_id` = `MagentoQuickstartDB`.`catalog_product_entity_int`.`entity_id`
+AND `MagentoQuickstartDB`.`catalog_product_entity_int`.`store_id` = '0'
+AND `MagentoQuickstartDB`.`catalog_product_entity_int`.`attribute_id` = '171')
+
+LEFT JOIN `MagentoQuickstartDB`.`catalog_product_entity_varchar`
+ON (`MagentoQuickstartDB`.`catalog_product_entity_varchar`.`attribute_id` = '174'
+AND `MagentoQuickstartDB`.`catalog_product_entity_varchar`.`store_id`= '0'
+AND `MagentoQuickstartDB`.`sales_order_item`.`product_id` = `MagentoQuickstartDB`.`catalog_product_entity_varchar`.`entity_id`)
+
+LEFT JOIN `MagentoQuickstartDB`.`cataloginventory_stock_item`
+ON `MagentoQuickstartDB`.`sales_order_item`.`product_id` = `MagentoQuickstartDB`.`cataloginventory_stock_item`.`product_id`
+
+WHERE `MagentoQuickstartDB`.`sales_order_item`.`updated_at`>=DATE_SUB(now(), INTERVAL 5 MINUTE);
