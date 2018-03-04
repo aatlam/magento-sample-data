@@ -213,7 +213,7 @@ SELECT `MagentoQuickstartDB`.`sales_order_item`.`item_id`,
 		WHEN 'الخماسين' THEN 'Khamasin'
 		WHEN 'بدر حنین‎' THEN 'Badar Hunain'
 		WHEN 'الوجه' THEN 'Wajh'
-        WHEN 'Riyadh+الرياض' OR 'الرياض' THEN 'Riyadh'
+        WHEN 'Riyadh+الرياض' THEN 'Riyadh'
 		WHEN 'Jeddah+جدة' THEN 'Jeddah'
 		WHEN 'Abha+ابها' THEN 'Abha'
 		WHEN 'Ahad Rafidah+احد رفيدة' THEN 'Ahad Rafidah'
